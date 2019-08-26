@@ -1,0 +1,14 @@
+# Stage 1 Build
+FROM rikorose/gcc-cmake as builder
+RUN mkdir -p cpp_example/build
+COPY CMakeLists.txt /cpp_example
+COPY hello_world_cmake.cpp /cpp_example
+WORKDIR cpp_example/build
+RUN cmake ..
+RUN make
+RUN ./hello_world_cmake
+
+# Stage 2 run
+FROM alpine:latest
+COPY --from=builder /cpp_example/build/hello_world_cmake /hello_world_cmake
+CMD ["./hello_world_cmake"]
